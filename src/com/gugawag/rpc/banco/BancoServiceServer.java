@@ -2,6 +2,7 @@ package com.gugawag.rpc.banco;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ public class BancoServiceServer extends UnicastRemoteObject implements BancoServ
 
     public BancoServiceServer() throws RemoteException {
         saldoContas = new HashMap<>();
+        contas = new ArrayList<Conta>();
+        
         saldoContas.put("1", 100.0);
         saldoContas.put("2", 156.0);
         saldoContas.put("3", 950.0);
@@ -29,39 +32,47 @@ public class BancoServiceServer extends UnicastRemoteObject implements BancoServ
     }
     
     @Override
-    public void adicionarConta(Conta conta) {
+    public String adicionarConta(Conta conta) throws RemoteException{
     	this.contas.add(conta);
+    	Conta result = contas.get(this.contas.size() - 1);
+    	return "\nNumero: "+ result.getNumero() + "\nSaldo: " + result.getSaldo();
 	}
     
     @Override
-	public void cadastrarNovaConta(double saldo) {
+	public String cadastrarNovaConta(double saldo) throws RemoteException{
     	String numero = Integer.toString(this.contas.size() + 1); 
 		Conta conta = new Conta(numero, saldo);
-		if (this.pesquisaDeConta(numero) != null) {
+		if (this.pesquisaDeConta(numero) != "Encontrado!") {
 			this.remocaoDeConta(numero);
-			this.adicionarConta(conta);
+			return this.adicionarConta(conta);
 		}
-		else {
-			this.adicionarConta(conta);
-		}
+		return this.adicionarConta(conta);
 	}
 	
     @Override
-	public Conta pesquisaDeConta(String numero) {
-		for (int index = 0; index < this.contas.size(); index ++) {
-			if (this.contas.get(index).getNumero() == numero) {
-				return this.contas.get(index);
-			}
-		}
-		return null;
+	public String pesquisaDeConta(String numero) throws RemoteException{
+    	if (this.contas.size() != 0) {
+    		for (int index = 0; index < this.contas.size(); index ++) {
+    			if (this.contas.get(index).getNumero().equals(numero)) {
+    				return "Encontrado:\nNumero -> "+this.contas.get(index).getNumero()+""
+    						+ "; Saldo -> R$"+ this.contas.get(index).getSaldo();
+    			}
+    		}
+    		return "Essa conta não existe!";
+    	}
+		return "Não existe nenhuma conta cadastrada!";
 	}
 	
     @Override
-	public void remocaoDeConta(String numero) {
-		for (int index = 0; index < this.contas.size(); index ++) {
-			if (this.contas.get(index).getNumero() == numero) {
-				this.contas.remove(index);
+	public String remocaoDeConta(String numero) throws RemoteException{
+    	if (this.contas.size() != 0) {
+			for (int index = 0; index < this.contas.size(); index ++) {
+				if (this.contas.get(index).getNumero().equals(numero)) {
+					this.contas.remove(index);
+				}
 			}
-		}
+			return "\nConta não encontrada!";
+    	}
+    	return ". . .";
 	}
 }

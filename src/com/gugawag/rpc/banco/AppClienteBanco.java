@@ -1,5 +1,6 @@
 package com.gugawag.rpc.banco;
 
+import java.io.Console;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -20,35 +21,32 @@ public class AppClienteBanco {
         int opcao = entrada.nextInt();
 
         while(opcao != 9) {
-            switch (opcao) {
-                case 1: {
-                    System.out.println("Digite o número da conta:");
-                    String conta = entrada.next();
-                    //chamada ao método remoto, como se fosse executar localmente
-                    System.out.println(banco.saldo(conta));
-                }
-                case 2: {
-                    //chamada ao método remoto, como se fosse executar localmente
-                    System.out.println(banco.quantidadeContas());
-                }
-                case 3: {
-                	System.out.println("Digite o saldo que a conta ter�!");
-                	double saldo = Double.parseDouble(entrada.next());
-                	banco.cadastrarNovaConta(saldo);
-                    System.out.println("Conta cadastrada!");
-                }
-                case 4: {
-                	System.out.println("Digite o numero da conta!");
-                	String numero = entrada.next();
-                	banco.remocaoDeConta(numero);
-                	System.out.println("Conta removida!");
-                }
-                case 5: {
-                    System.out.println("Digite o numero da conta!");
-                    String numero = entrada.next();
-                    System.out.println(banco.pesquisaDeConta(numero));
-                }
-                
+        	if(opcao == 1) {
+        		System.out.println("\nDigite o número da conta:");
+        		String conta = entrada.next();
+        		System.out.println("");
+                //chamada ao método remoto, como se fosse executar localmente
+                System.out.println(banco.saldo(conta));
+        	}
+        	else if (opcao == 2) {
+        		//chamada ao método remoto, como se fosse executar localmente
+                System.out.println("\n"+ banco.quantidadeContas());
+        	}
+        	else if (opcao == 3){
+            	System.out.println("Digite o saldo que a conta ter�!");
+            	double saldo = Double.parseDouble(entrada.next());
+                System.out.println(banco.cadastrarNovaConta(saldo));
+            }
+        	else if (opcao == 4){
+            	System.out.println("Digite o numero da conta!");
+            	String numero = entrada.next();
+            	banco.remocaoDeConta(numero);
+            	System.out.println(banco.remocaoDeConta(numero));
+            }
+        	else if (opcao == 5){
+                System.out.println("Digite o numero da conta!");
+                String numero = entrada.next();
+                System.out.println(banco.pesquisaDeConta(numero));
             }
             menu();
             opcao = entrada.nextInt();
@@ -63,7 +61,7 @@ public class AppClienteBanco {
         System.out.println("3 - Adicionar conta");
         System.out.println("4 - Remover conta");
         System.out.println("5 - Pesquisar conta");
-        System.out.println("9 - Sair");
+        System.out.println("9 - Sair \n");
     }
 
 }
